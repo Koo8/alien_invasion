@@ -1,0 +1,68 @@
+In Alien Invasion,
+the player controls a rocket ship that appears at the bottom center of the screen.
+The player can move the ship right and left using the arrow keys and shoot bullets using the
+spacebar.
+When the game begins, a fleet of aliens fills the sky
+and moves across and down the screen.
+The player shoots and destroys the aliens.
+If the player shoots all the aliens, a new fleet appears that moves faster than the previous fleet.
+If any alien hits the player’s ship or reaches the bottom of the screen, the player
+loses a ship.
+If the player loses three ships, the game ends.
+
+STEPS:
+1. Use a Game class to manage all game assets and behaviors
+    class Game:
+        def __init__:
+            pygame.init()
+            self.settings  = Settings() --> put all settings into a seperate file that has Settings class
+            self.screen = pygame.display.set_mode(width, height) --> game needs a surface for screen
+            self.whatevere_elements = WhateverElements() -> a seperate file with WhateverElements class for its unique surface and behaviors
+
+
+        def run_game():
+            While True:
+                self._check_event() --> a helper method for monitoring events
+                self._update_game()
+
+        def _update_game():
+            self.screen.fill(RGB) --> fill game surface background before any other drawing of elements
+            self.whatever_elements.blitme() --> This is called from the method in WhateverElements class
+            ...
+            pygame.display.flip() --> The last. To constantly update the game surface
+
+        def _check_event():
+            for event in pygame.event.get():  # returns a list of events that have taken place since the last time this function was called
+                if event.type == pygame.QUIT:
+                    sys.exit()
+
+    if __name__ == '__main__':
+        game = Game()
+        game.run_game()
+
+2. Refactoring --> to put some actions into a method, then call the method, to simplify the code
+3. class WhateverElements:
+        def __init__(self, gameinstance):
+            # define gameinstance screen for position defination
+            self.screen = gameinstance.screen
+            self.screen_rect = gameinstance.screen.get_rect()
+            # load element image, then define its surface rect
+            self.image = pygame.image.load(thePath)
+            self.rect = self.image.get_rect()
+            # with both game and image get_rect() available, now define the image position on game screen
+            self.rect.midbottom = self.screen_rect.midbottom
+
+        def blitme(self):
+            self.screen.blit(self.image, self.rect) --> the element at the defined position
+4. user control element movement:
+    detect KEYDOWN event and KEYUP event, set a flag(bool) in ELEMent class and an update() to continuously move element till KEYUP detected
+    new positions of ELement needs to be updated before the _update_game() is called
+
+    NOTE: this game only need one while loop for run_game().
+5. control element moving speed and boundry
+    For speed, use float() to fine control the movement, however rect.x is integer, so use a element.x attribute to store
+    rect.x float value, after update with new position, assign rect.x to the element.x for better control of the speed tempo
+    NEXT, control the boundry of ship movement in the update()
+6. refactoring a method if it goes too long
+7 Add bullets and other elements using Group and Sprites
+8. delete extra bullets out of bound, set a bullet allowed limit
